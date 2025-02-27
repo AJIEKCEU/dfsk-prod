@@ -187,9 +187,68 @@
         <div class="main__container main__body">
             <section class="section">
                 <div class="info">
-                    <div class="info__media">
-                        <img class="object-fit" src="local/templates/main/images/temp/img669x614.jpg" alt="">
-                    </div>
+                    <script src="https://api-maps.yandex.ru/2.1/?lang=ru-RU&amp;apikey=<ваш API-ключ>" type="text/javascript"></script>
+                    <script>
+                        var data = {
+                                "type": "FeatureCollection",
+                                "features": [{
+                                    "type": "Feature",
+                                    "id": "point_1257",
+                                    "geometry": {"type": "Point", "coordinates": ["53.934329", "27.458040"]},
+                                    "properties": {
+                                        "hintContent": "Автосалон GSM",
+                                        "balloonContent": "ул. Тимирязева 123/2 ТРЦ “Град"
+                                    }
+                                }]
+                            },
+                            ymaps,
+                            objectManager,
+                            myMap;
+
+                        // Инициализировать карту
+                        function init() {
+                            var winWidth = $(window).width();
+
+                            myMap = document.getElementById("map");
+
+                            if (!myMap) return;
+
+                            myMap = new ymaps.Map(myMap, {
+                                center: [53.932861, 27.456872],
+                                zoom: 15,
+                                controls: []
+                            });
+                            objectManager = new ymaps.ObjectManager();
+
+                            myMap.controls.add("zoomControl", {});
+                            myMap.behaviors.disable('scrollZoom');
+
+                            if (winWidth <= 1024) {
+                                myMap.behaviors.disable('drag');
+                            }
+
+                            objectManager.add(data);
+
+                            objectManager.objects.options.set({
+                                iconLayout: "default#image",
+                                iconImageHref: "/local/templates/main/images/marker.svg",
+                                iconImageSize: [36, 45],
+                                iconImageOffset: [-18, -45],
+                                balloonPanelMaxMapArea: 0
+                            });
+                            myMap.geoObjects.add(objectManager);
+
+                            myMap.setBounds(myMap.geoObjects.getBounds(), {
+                                checkZoomRange: true
+                            }).then(function () {
+                                myMap.setZoom(15);
+                            });
+                        }
+
+                        if (ymaps != undefined) ymaps.ready(init);
+
+                    </script>
+                    <div class="info__map" id="map"></div>
                     <div class="info__description info__description--theme-gray">
                         <div class="info__form form">
                             <form>
